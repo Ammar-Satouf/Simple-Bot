@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوت إدارة طلبات السنة التحضيرية - التوثيق</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Tajawal', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        }
+        .card-gradient {
+            background: linear-gradient(145deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.95) 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+        }
+        .glow {
+            box-shadow: 0 0 30px rgba(99,102,241,0.15);
+        }
+        .code-block {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+        }
+        .code-block code {
+            color: #e6edf3;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .comment { color: #8b949e; }
+        .function { color: #d2a8ff; }
+        .variable { color: #ffa657; }
+        .number { color: #79c0ff; }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .flow-arrow {
+            animation: bounce-down 1.5s infinite;
+        }
+
+        @keyframes bounce-down {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fade-in-up 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 4px;
+        }
+
+        .copy-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .menu-demo {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            cursor: pointer;
+            direction: ltr;
+            text-align: left;
+        }
+        .menu-item:hover {
+            background: rgba(99, 102, 241, 0.15);
+        }
+        .menu-item .cmd {
+            color: #818cf8;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .menu-item .desc {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+    <!-- Header -->
+    <header class="relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 right-20 w-72 h-72 bg-indigo-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 left-20 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative max-w-6xl mx-auto px-6 py-16">
+            <div class="text-center animate-fade-in" style="animation-delay: 0.1s">
+                <div class="inline-flex items-center gap-3 bg-indigo-500/10 border border-indigo-500/30 rounded-full px-6 py-2 mb-8">
+                    <span class="text-2xl">🤖</span>
+                    <span class="text-indigo-300 font-medium">Telegram Bot Documentation</span>
+                </div>
+
+                <h1 class="text-4xl md:text-6xl font-black mb-4">
+                    <span class="bg-gradient-to-l from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        بوت إدارة الطلبات
+                    </span>
+                </h1>
+                <h2 class="text-xl md:text-2xl text-slate-400 mb-6">
+                    السنة التحضيرية — الفصل الثاني
+                </h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">
+                    نظام متكامل لإدارة طلبات الطلاب — 8 خطوات لجمع البيانات مع نظام موافقة/رفض مباشر وإحصاء تلقائي للأكواد
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-4 mt-10">
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-3">
+                        <span class="text-slate-400 text-sm">مبني بـ</span>
+                        <p class="text-white font-bold">Python + aiogram 3.x</p>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-3">
+                        <span class="text-slate-400 text-sm">قاعدة البيانات</span>
+                        <p class="text-white font-bold">JSON محلي</p>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-3">
+                        <span class="text-slate-400 text-sm">إدارة المحادثة</span>
+                        <p class="text-white font-bold">FSM States</p>
+                    </div>
+                    <div class="bg-slate-800/50 border border-slate-700 rounded-xl px-5 py-3">
+                        <span class="text-slate-400 text-sm">قائمة الأوامر</span>
+                        <p class="text-white font-bold">Bot Menu ✅</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-6 pb-20">
+
+        <!-- Bot Menu Demo Section -->
+        <div class="mb-12 animate-fade-in" style="animation-delay: 0.2s">
+            <div class="card-gradient rounded-2xl p-8 glow">
+                <h3 class="text-2xl font-bold mb-2 flex items-center gap-3">
+                    <span class="text-3xl">📋</span>
+                    قائمة الأوامر المدمجة (Bot Menu)
+                </h3>
+                <p class="text-slate-400 mb-6">الأوامر مسجلة تلقائياً — اضغط زر <b class="text-white">"/"</b> في تلغرام لتظهر القائمة:</p>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <!-- Demo -->
+                    <div class="menu-demo">
+                        <div class="text-center text-xs text-slate-500 mb-3 pb-2 border-b border-slate-700">📋 قائمة الأوامر — Bot Menu</div>
+                        <div class="space-y-1">
+                            <div class="menu-item">
+                                <div>
+                                    <div class="cmd">/start</div>
+                                    <div class="desc">🏠 بدء البوت والقائمة الرئيسية</div>
+                                </div>
+                            </div>
+                            <div class="menu-item">
+                                <div>
+                                    <div class="cmd">/admin</div>
+                                    <div class="desc">📊 عرض الإحصائيات (للأدمن فقط)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-slate-700 text-center">
+                            <span class="text-xs text-slate-600">اضغط "/" → تظهر القائمة → اختر الأمر</span>
+                        </div>
+                    </div>
+
+                    <!-- Explanation -->
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">1</div>
+                            <div>
+                                <h4 class="font-bold text-indigo-300">تسجيل تلقائي</h4>
+                                <p class="text-slate-400 text-sm">عند تشغيل البوت يتم تسجيل الأوامر تلقائياً عبر <code class="text-indigo-300 text-xs">bot.set_my_commands()</code></p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">2</div>
+                            <div>
+                                <h4 class="font-bold text-indigo-300">بدون كتابة يدوية</h4>
+                                <p class="text-slate-400 text-sm">لا حاجة لكتابة الأمر — اضغط <b class="text-white">"/"</b> بجانب حقل الكتابة واختر من القائمة</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 mt-1">3</div>
+                            <div>
+                                <h4 class="font-bold text-indigo-300">مع وصف واضح</h4>
+                                <p class="text-slate-400 text-sm">كل أمر يظهر مع وصفه بالعربية لسهولة الاستخدام</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="flex flex-wrap justify-center gap-2 mb-12 animate-fade-in" style="animation-delay: 0.3s">
+            <button onclick="switchTab('structure')" class="tab-btn active px-5 py-3 rounded-xl font-medium transition-all duration-300 bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50" data-tab="structure">
+                📁 هيكل المشروع
+            </button>
+            <button onclick="switchTab('setup')" class="tab-btn px-5 py-3 rounded-xl font-medium transition-all duration-300 bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50" data-tab="setup">
+                🚀 التشغيل
+            </button>
+            <button onclick="switchTab('features')" class="tab-btn px-5 py-3 rounded-xl font-medium transition-all duration-300 bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50" data-tab="features">
+                ⚡ الميزات
+            </button>
+            <button onclick="switchTab('flow')" class="tab-btn px-5 py-3 rounded-xl font-medium transition-all duration-300 bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50" data-tab="flow">
+                🔄 سير العمل
+            </button>
+            <button onclick="switchTab('code')" class="tab-btn px-5 py-3 rounded-xl font-medium transition-all duration-300 bg-slate-800/50 border border-slate-700 hover:border-indigo-500/50" data-tab="code">
+                💻 الأكواد
+            </button>
+        </div>
+
+        <!-- Tab: Structure -->
+        <div id="tab-structure" class="tab-content active animate-fade-in" style="animation-delay: 0.4s">
+            <div class="card-gradient rounded-2xl p-8 glow">
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="text-3xl">📁</span>
+                    هيكل المشروع
+                </h3>
+
+                <div class="code-block mb-8">
+                    <code>
+<span class="comment">📂 telegram-bot/</span>
+├── <span class="variable">config.py</span>          <span class="comment"># ⚙️ ملف الإعدادات والتوكن</span>
+├── <span class="variable">main.py</span>            <span class="comment"># 🤖 الملف الرئيسي للبوت</span>
+├── <span class="variable">database.json</span>      <span class="comment"># 📂 قاعدة البيانات (ينشأ تلقائياً)</span>
+├── <span class="variable">requirements.txt</span>   <span class="comment"># 📦 المتطلبات</span>
+└── <span class="variable">index.html</span>         <span class="comment"># 📄 صفحة التوثيق (هذه الصفحة)</span>
+                    </code>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                        <div class="text-2xl mb-2">⚙️</div>
+                        <h4 class="font-bold text-indigo-300 mb-2">config.py</h4>
+                        <p class="text-slate-400 text-sm">يحتوي على التوكن، آيدي القناة، قائمة المصرح لهم، ورسائل النظام</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                        <div class="text-2xl mb-2">🤖</div>
+                        <h4 class="font-bold text-indigo-300 mb-2">main.py</h4>
+                        <p class="text-slate-400 text-sm">المنطق الرئيسي: FSM (8 خطوات)، معالجات الأوامر، نظام الموافقة، وإدارة قاعدة البيانات</p>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                        <div class="text-2xl mb-2">📂</div>
+                        <h4 class="font-bold text-indigo-300 mb-2">database.json</h4>
+                        <p class="text-slate-400 text-sm">يُنشأ تلقائياً عند أول تشغيل — يحفظ الطلبات والإحصائيات</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Setup -->
+        <div id="tab-setup" class="tab-content">
+            <div class="card-gradient rounded-2xl p-8 glow">
+                <h3 class="text-2xl font-bold mb-8 flex items-center gap-3">
+                    <span class="text-3xl">🚀</span>
+                    تعليمات التشغيل
+                </h3>
+
+                <div class="space-y-6">
+                    <!-- Step 1 -->
+                    <div class="relative pr-12">
+                        <div class="absolute right-0 top-0 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-bold text-lg">1</div>
+                        <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                            <h4 class="font-bold text-lg mb-3">تثبيت Python</h4>
+                            <p class="text-slate-400 mb-3">تأكد من تثبيت Python 3.10 أو أحدث</p>
+                            <div class="code-block">
+                                <code><span class="function">python</span> <span class="variable">--version</span></code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-2xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <!-- Step 2 -->
+                    <div class="relative pr-12">
+                        <div class="absolute right-0 top-0 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-bold text-lg">2</div>
+                        <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                            <h4 class="font-bold text-lg mb-3">تثبيت المتطلبات</h4>
+                            <p class="text-slate-400 mb-3">تثبيت مكتبة aiogram</p>
+                            <div class="code-block">
+                                <code><span class="function">pip</span> <span class="variable">install</span> <span class="string">aiogram==3.15.0</span></code>
+                            </div>
+                            <p class="text-slate-500 text-sm mt-2">أو استخدم ملف المتطلبات:</p>
+                            <div class="code-block mt-2">
+                                <code><span class="function">pip</span> <span class="variable">install</span> <span class="keyword">-r</span> <span class="string">requirements.txt</span></code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-2xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <!-- Step 3 -->
+                    <div class="relative pr-12">
+                        <div class="absolute right-0 top-0 w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-bold text-lg">3</div>
+                        <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
+                            <h4 class="font-bold text-lg mb-3">إعداد البوت</h4>
+                            <p class="text-slate-400 mb-3">تأكد من الإعدادات في <code class="text-indigo-300">config.py</code>:</p>
+                            <ul class="text-slate-400 space-y-2 text-sm">
+                                <li>✅ توكن البوت صحيح</li>
+                                <li>✅ البوت أدمن في القناة المحددة</li>
+                                <li>✅ آيدي القناة صحيح</li>
+                                <li>✅ آيديات المستخدمين المصرح لهم صحيحة</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-2xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <!-- Step 4 -->
+                    <div class="relative pr-12">
+                        <div class="absolute right-0 top-0 w-10 h-10 bg-green-600 rounded-full flex items-center justify-center font-bold text-lg">4</div>
+                        <div class="bg-slate-800/50 rounded-xl p-5 border border-green-700/30">
+                            <h4 class="font-bold text-lg mb-3 text-green-400">تشغيل البوت 🎉</h4>
+                            <div class="code-block">
+                                <code><span class="function">python</span> <span class="string">main.py</span></code>
+                            </div>
+                            <p class="text-green-400/70 text-sm mt-3">✅ سيظهر: "جاري تشغيل البوت..." + "تم تسجيل قائمة الأوامر بنجاح"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Features -->
+        <div id="tab-features" class="tab-content">
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Feature 1 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-red-500/20 text-red-400">🔐</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">نظام الصلاحيات</h4>
+                            <p class="text-slate-400 text-sm">فقط المستخدمون المصرح لهم يمكنهم استخدام البوت. أي شخص آخر يحصل على رسالة "شغلك مو هون 😂"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-blue-500/20 text-blue-400">📝</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">جمع بيانات ذكي — 8 خطوات (FSM)</h4>
+                            <p class="text-slate-400 text-sm">8 خطوات لجمع بيانات الطالب بشكل تفاعلي عبر نظام FSM مع أزرار Reply Keyboard — يشمل معرف الجهاز (Device ID)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-green-500/20 text-green-400">✅</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">نظام الموافقة والرفض</h4>
+                            <p class="text-slate-400 text-sm">أزرار Inline في القناة للموافقة أو الرفض مباشرة — عند القبول يتم إحصاء الأكواد تلقائياً</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-purple-500/20 text-purple-400">📊</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">إحصائيات تفصيلية</h4>
+                            <p class="text-slate-400 text-sm">أمر /admin يعرض عدد الطلاب المقبولين ومجموع الأكواد العادية وأكواد الإنجليزي — من قائمة الأوامر مباشرة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-yellow-500/20 text-yellow-400">📂</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">قاعدة بيانات JSON</h4>
+                            <p class="text-slate-400 text-sm">تخزين محلي في ملف JSON يُنشأ تلقائياً — يحفظ كل الطلبات والإحصائيات وحالات الطلبات ومعرفات الأجهزة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-pink-500/20 text-pink-400">🛡️</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">منع التكرار</h4>
+                            <p class="text-slate-400 text-sm">حماية من الضغط المتكرر على أزرار الموافقة/الرفض — كل طلب يُعالج مرة واحدة فقط</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 7 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-cyan-500/20 text-cyan-400">📟</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2 flex items-center gap-2">
+                                معرف الجهاز (Device ID)
+                                <span class="copy-tag">📋 قابل للنسخ</span>
+                            </h4>
+                            <p class="text-slate-400 text-sm">يُطلب معرف الجهاز كخطوة 4 ويُعرض في رسالة القناة داخل <code class="text-cyan-300 text-xs">&lt;code&gt;</code> ليكون قابل للنسخ بضغطة واحدة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 8 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-teal-500/20 text-teal-400">📋</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">قائمة أوامر مدمجة (Bot Menu)</h4>
+                            <p class="text-slate-400 text-sm">الأوامر /start و /admin مسجلة تلقائياً في قائمة تلغرام — اضغط "/" فتظهر القائمة واختر الأمر بدون كتابة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 9 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-orange-500/20 text-orange-400">⚙️</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">معالجة الأخطاء</h4>
+                            <p class="text-slate-400 text-sm">نظام متكامل لمعالجة الأخطاء مع تسجيل logging وحماية من المدخلات الخاطئة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 10 -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <div class="flex items-start gap-4">
+                        <div class="feature-icon bg-indigo-500/20 text-indigo-400">📊</div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">إحصاء تلقائي للأكواد</h4>
+                            <p class="text-slate-400 text-sm">عند الموافقة يتم إحصاء الأكواد العادية والإنجليزي تلقائياً من بيانات الطلب للتتبع المستقبلي</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Flow -->
+        <div id="tab-flow" class="tab-content">
+            <div class="card-gradient rounded-2xl p-8 glow">
+                <h3 class="text-2xl font-bold mb-8 flex items-center gap-3">
+                    <span class="text-3xl">🔄</span>
+                    سير عمل البوت
+                </h3>
+
+                <!-- Flow diagram -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                        <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-xl flex-shrink-0">1</div>
+                        <div>
+                            <h4 class="font-bold">المستخدم يختار /start من قائمة الأوامر</h4>
+                            <p class="text-slate-400 text-sm">اضغط "/" → اختر /start → التحقق من الصلاحيات → عرض رسالة الترحيب + زر "📩 إرسال طلب جديد"</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                        <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-xl flex-shrink-0">2</div>
+                        <div>
+                            <h4 class="font-bold">الضغط على "📩 إرسال طلب جديد"</h4>
+                            <p class="text-slate-400 text-sm">بدء FSM → جمع 8 معلومات خطوة بخطوة</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <div class="bg-slate-800/30 rounded-xl p-5 border border-indigo-500/20">
+                        <h4 class="font-bold text-indigo-300 mb-3">📋 خطوات جمع البيانات (FSM) — 8 خطوات:</h4>
+                        <div class="grid sm:grid-cols-2 gap-2 text-sm">
+                            <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                                <span class="text-indigo-400 font-bold">1.</span> الاسم الثلاثي للطالب
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                                <span class="text-indigo-400 font-bold">2.</span> رقم الطالب
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                                <span class="text-indigo-400 font-bold">3.</span> معرف التلغرام
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3 border border-cyan-500/30 border-2">
+                                <span class="text-cyan-400 font-bold">4.</span> معرف الجهاز (Device ID)
+                                <span class="copy-tag mr-1">📋 قابل للنسخ</span>
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                                <span class="text-indigo-400 font-bold">5.</span> المواد المطلوبة
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                                <span class="text-indigo-400 font-bold">6.</span> عدد الأكواد
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                                <span class="text-indigo-400 font-bold">7.</span> أكواد إنجليزي؟ (نعم/لا)
+                            </div>
+                            <div class="bg-slate-900/50 rounded-lg p-3 border border-slate-700">
+                                <span class="text-indigo-400 font-bold">8.</span> ملاحظات (اختياري)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <div class="flex items-center gap-4 bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                        <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center text-xl flex-shrink-0">3</div>
+                        <div>
+                            <h4 class="font-bold">إرسال الطلب للقناة</h4>
+                            <p class="text-slate-400 text-sm">رسالة منظمة (معرف الجهاز قابل للنسخ) مع أزرار ✅ موافقة و ❌ رفض (Inline)</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <!-- Channel Message Preview -->
+                    <div class="bg-slate-900/70 rounded-xl p-5 border border-slate-600">
+                        <h4 class="font-bold text-slate-300 mb-3 text-sm">📨 معاينة رسالة القناة:</h4>
+                        <div class="bg-slate-800/80 rounded-lg p-4 text-sm leading-relaxed border border-slate-700" dir="rtl">
+                            <div class="text-slate-400">━━━━━━━━━━━━━━━━━━━━━━</div>
+                            <div class="font-bold text-white">📨 طلب جديد</div>
+                            <div class="text-slate-400">━━━━━━━━━━━━━━━━━━━━━━</div>
+                            <div class="mt-2 space-y-1">
+                                <div>👤 <b class="text-white">اسم الطالب:</b> <span class="text-slate-300">أحمد محمد علي</span></div>
+                                <div>🔢 <b class="text-white">رقم الطالب:</b> <span class="text-slate-300">12345</span></div>
+                                <div>📱 <b class="text-white">معرف التلغرام:</b> <span class="text-slate-300">@ahmed</span></div>
+                                <div>📟 <b class="text-white">معرف الجهاز:</b> <code class="bg-slate-700 px-2 py-0.5 rounded text-cyan-300 text-xs">ABC-123-XYZ-456</code> <span class="copy-tag">اضغط للنسخ</span></div>
+                                <div>📚 <b class="text-white">المواد المطلوبة:</b> <span class="text-slate-300">رياضيات، فيزياء</span></div>
+                                <div>🔑 <b class="text-white">عدد الأكواد:</b> <span class="text-slate-300">3</span></div>
+                                <div>🇬🇧 <b class="text-white">أكواد الإنجليزي:</b> <span class="text-slate-300">1</span></div>
+                            </div>
+                            <div class="text-slate-400 mt-2">━━━━━━━━━━━━━━━━━━━━━━</div>
+                            <div class="space-y-1 mt-1">
+                                <div>👨‍💼 <b class="text-white">مقدم الطلب:</b> <span class="text-slate-300">محمد</span></div>
+                                <div>📋 <b class="text-white">ملاحظات:</b> <span class="text-slate-300">لا يوجد</span></div>
+                                <div>🕐 <b class="text-white">التاريخ:</b> <span class="text-slate-300">2025-01-15 | 14:30:00</span></div>
+                            </div>
+                            <div class="text-slate-400">━━━━━━━━━━━━━━━━━━━━━━</div>
+                            <div class="flex gap-2 mt-3">
+                                <span class="bg-green-600/20 border border-green-500/40 text-green-400 px-4 py-1.5 rounded-lg text-xs font-bold">✅ موافقة</span>
+                                <span class="bg-red-600/20 border border-red-500/40 text-red-400 px-4 py-1.5 rounded-lg text-xs font-bold">❌ رفض</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-green-900/20 rounded-xl p-5 border border-green-500/30">
+                            <h4 class="font-bold text-green-400 mb-3">✅ عند الموافقة</h4>
+                            <ul class="text-slate-400 text-sm space-y-2">
+                                <li>1. قبول الطلب مباشرة</li>
+                                <li>2. إحصاء الأكواد تلقائياً من بيانات الطلب</li>
+                                <li>3. تحديث الإحصائيات في قاعدة البيانات</li>
+                                <li>4. تحديث رسالة القناة بحالة "تمت الموافقة"</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-900/20 rounded-xl p-5 border border-red-500/30">
+                            <h4 class="font-bold text-red-400 mb-3">❌ عند الرفض</h4>
+                            <ul class="text-slate-400 text-sm space-y-2">
+                                <li>1. رفض الطلب مباشرة</li>
+                                <li>2. تحديث حالة الطلب في قاعدة البيانات</li>
+                                <li>3. تحديث رسالة القناة بحالة "تم الرفض"</li>
+                                <li>4. لا يتم احتساب أي أكواد</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="text-center text-xl flow-arrow text-indigo-400">⬇️</div>
+
+                    <div class="flex items-center gap-4 bg-purple-800/20 rounded-xl p-4 border border-purple-500/30">
+                        <div class="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center text-xl flex-shrink-0">📊</div>
+                        <div>
+                            <h4 class="font-bold">عرض الإحصائيات</h4>
+                            <p class="text-slate-400 text-sm">الأدمن يختار /admin من قائمة الأوامر → تظهر إحصائيات الطلاب والأكواد فوراً</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Code -->
+        <div id="tab-code" class="tab-content">
+            <div class="space-y-6">
+                <!-- Config Code -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <span>⚙️</span>
+                        config.py
+                    </h4>
+                    <div class="code-block">
+                        <code>
+<span class="comment"># ⚙️ ملف الإعدادات</span>
+
+<span class="comment"># 🔐 توكن البوت</span>
+<span class="variable">TOKEN</span> = <span class="string">"YOUR_BOT_TOKEN_HERE"</span>
+
+<span class="comment"># 📢 آيدي القناة</span>
+<span class="variable">CHANNEL_ID</span> = <span class="number">-1003881077982</span>
+
+<span class="comment"># 👥 المستخدمون المصرح لهم</span>
+<span class="variable">ALLOWED_USERS</span> = [<span class="number">7857570699</span>, <span class="number">822727282</span>]
+
+<span class="comment"># 👑 آيدي الأدمن</span>
+<span class="variable">ADMIN_ID</span> = <span class="number">7857570699</span>
+
+<span class="comment"># 📂 مسار قاعدة البيانات</span>
+<span class="variable">DATABASE_FILE</span> = <span class="string">"database.json"</span>
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Database Structure -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <span>📂</span>
+                        database.json — الهيكل
+                    </h4>
+                    <div class="code-block">
+                        <code>
+{
+    <span class="string">"statistics"</span>: {
+        <span class="string">"accepted_students"</span>: <span class="number">0</span>,
+        <span class="string">"total_codes"</span>: <span class="number">0</span>,
+        <span class="string">"total_english_codes"</span>: <span class="number">0</span>
+    },
+    <span class="string">"requests"</span>: {
+        <span class="string">"REQ_123_1700000000"</span>: {
+            <span class="string">"student_name"</span>: <span class="string">"أحمد محمد علي"</span>,
+            <span class="string">"student_number"</span>: <span class="string">"12345"</span>,
+            <span class="string">"telegram_username"</span>: <span class="string">"@student"</span>,
+            <span class="string">"device_id"</span>: <span class="string">"ABC-123-XYZ-456"</span>,  <span class="comment">// 📟 معرف الجهاز</span>
+            <span class="string">"subjects"</span>: <span class="string">"رياضيات, فيزياء"</span>,
+            <span class="string">"codes_count"</span>: <span class="number">3</span>,
+            <span class="string">"has_english_codes"</span>: <span class="keyword">true</span>,
+            <span class="string">"english_codes_count"</span>: <span class="number">1</span>,
+            <span class="string">"notes"</span>: <span class="string">"لا يوجد"</span>,
+            <span class="string">"status"</span>: <span class="string">"pending"</span>
+        }
+    }
+}
+                        </code>
+                    </div>
+                </div>
+
+                <!-- FSM States -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <span>🧠</span>
+                        FSM States — حالات المحادثة (8 خطوات)
+                    </h4>
+                    <div class="code-block">
+                        <code>
+<span class="keyword">class</span> <span class="function">RequestForm</span>(StatesGroup):
+    <span class="variable">student_name</span> = State()           <span class="comment"># 1- الاسم الثلاثي</span>
+    <span class="variable">student_number</span> = State()         <span class="comment"># 2- رقم الطالب</span>
+    <span class="variable">telegram_username</span> = State()      <span class="comment"># 3- معرف التلغرام</span>
+    <span class="variable">device_id</span> = State()              <span class="comment"># 4- 📟 معرف الجهاز (Device ID)</span>
+    <span class="variable">subjects</span> = State()               <span class="comment"># 5- المواد المطلوبة</span>
+    <span class="variable">codes_count</span> = State()            <span class="comment"># 6- عدد الأكواد</span>
+    <span class="variable">has_english_codes</span> = State()      <span class="comment"># 7- أكواد إنجليزي؟</span>
+    <span class="variable">english_codes_count</span> = State()    <span class="comment"># 7.1- عدد أكواد الإنجليزي</span>
+    <span class="variable">notes</span> = State()                  <span class="comment"># 8- ملاحظات</span>
+
+<span class="comment"># ✅ الموافقة والرفض تتم مباشرة عبر أزرار Inline</span>
+<span class="comment"># 📟 معرف الجهاز يُعرض داخل &lt;code&gt; ليكون قابل للنسخ</span>
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Bot Menu Commands -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <span>📋</span>
+                        تسجيل قائمة الأوامر (Bot Menu)
+                    </h4>
+                    <div class="code-block">
+                        <code>
+<span class="comment"># 📋 تسجيل قائمة الأوامر عند بدء التشغيل</span>
+<span class="keyword">from</span> aiogram.types <span class="keyword">import</span> <span class="function">BotCommand</span>
+
+<span class="variable">commands</span> = [
+    BotCommand(<span class="variable">command</span>=<span class="string">"start"</span>, <span class="variable">description</span>=<span class="string">"🏠 بدء البوت والقائمة الرئيسية"</span>),
+    BotCommand(<span class="variable">command</span>=<span class="string">"admin"</span>, <span class="variable">description</span>=<span class="string">"📊 عرض الإحصائيات (للأدمن فقط)"</span>),
+]
+<span class="keyword">await</span> bot.set_my_commands(commands)
+
+<span class="comment"># ✅ الآن ستظهر الأوامر في قائمة "/" داخل تلغرام</span>
+<span class="comment"># المستخدم يضغط "/" → تظهر القائمة → يختار الأمر مباشرة</span>
+<span class="comment"># لا حاجة لكتابة الأمر يدوياً!</span>
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Device ID Copyable -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <span>📟</span>
+                        معرف الجهاز — قابل للنسخ
+                        <span class="copy-tag">📋 قابل للنسخ</span>
+                    </h4>
+                    <div class="code-block">
+                        <code>
+<span class="comment"># 📟 معرف الجهاز يُعرض داخل &lt;code&gt; في رسالة القناة</span>
+<span class="comment"># هذا يجعله قابل للنسخ بضغطة واحدة في تلغرام</span>
+
+<span class="comment"># في رسالة القناة:</span>
+<span class="variable">channel_message</span> = (
+    <span class="string">f"📟 &lt;b&gt;معرف الجهاز:&lt;/b&gt; &lt;code&gt;{data['device_id']}&lt;/code&gt;"</span>
+)
+
+<span class="comment"># في دالة إعادة بناء النص:</span>
+<span class="string">f"📟 &lt;b&gt;معرف الجهاز:&lt;/b&gt; &lt;code&gt;{request_data.get('device_id', 'غير متوفر')}&lt;/code&gt;"</span>
+
+<span class="comment"># ✅ المستخدم يضغط على النص في تلغرام → يتم نسخه مباشرة!</span>
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Commands -->
+                <div class="card-gradient rounded-2xl p-6 glow">
+                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <span>💬</span>
+                        الأوامر المتاحة
+                        <span class="text-xs bg-teal-500/20 text-teal-400 px-2 py-1 rounded-full mr-2">تظهر في قائمة "/"</span>
+                    </h4>
+                    <div class="bg-teal-500/10 border border-teal-500/30 rounded-xl p-4 mb-4">
+                        <p class="text-teal-300 text-sm">📋 جميع الأوامر مسجلة تلقائياً في قائمة تلغرام — اضغط زر <b class="text-white">"/"</b> بجانب حقل الكتابة لتظهر لك القائمة واختر الأمر مباشرة!</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-700">
+                                    <th class="text-right py-3 px-4 text-indigo-300">الأمر</th>
+                                    <th class="text-right py-3 px-4 text-indigo-300">الوصف</th>
+                                    <th class="text-right py-3 px-4 text-indigo-300">الصلاحية</th>
+                                    <th class="text-right py-3 px-4 text-indigo-300">طريقة الوصول</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-400">
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3 px-4 font-mono text-white">/start</td>
+                                    <td class="py-3 px-4">🏠 بدء البوت والقائمة الرئيسية</td>
+                                    <td class="py-3 px-4"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded">المصرح لهم</span></td>
+                                    <td class="py-3 px-4"><span class="bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded">قائمة "/"</span></td>
+                                </tr>
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-3 px-4 font-mono text-white">/admin</td>
+                                    <td class="py-3 px-4">📊 عرض الإحصائيات</td>
+                                    <td class="py-3 px-4"><span class="bg-red-500/20 text-red-400 px-2 py-1 rounded">الأدمن فقط</span></td>
+                                    <td class="py-3 px-4"><span class="bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded">قائمة "/"</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 font-mono text-white">📩 إرسال طلب جديد</td>
+                                    <td class="py-3 px-4">بدء إرسال طلب جديد</td>
+                                    <td class="py-3 px-4"><span class="bg-green-500/20 text-green-400 px-2 py-1 rounded">المصرح لهم</span></td>
+                                    <td class="py-3 px-4"><span class="bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded">زر Reply</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requirements Section (always visible) -->
+        <div class="mt-12 card-gradient rounded-2xl p-8 glow animate-fade-in" style="animation-delay: 0.6s">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="text-3xl">📦</span>
+                المتطلبات
+            </h3>
+            <div class="code-block">
+                <code>
+<span class="comment"># requirements.txt</span>
+<span class="string">aiogram</span>==<span class="number">3.15.0</span>
+                </code>
+            </div>
+
+            <div class="mt-6 bg-amber-500/10 border border-amber-500/30 rounded-xl p-5">
+                <h4 class="font-bold text-amber-400 mb-2">⚠️ ملاحظات مهمة:</h4>
+                <ul class="text-slate-400 text-sm space-y-2">
+                    <li>• تأكد أن البوت <b class="text-white">أدمن</b> في القناة المحددة مع صلاحيات إرسال الرسائل</li>
+                    <li>• يجب أن يبدأ المستخدمون المصرح لهم محادثة مع البوت أولاً (/start)</li>
+                    <li>• ملف <code class="text-indigo-300">database.json</code> يُنشأ تلقائياً عند أول تشغيل</li>
+                    <li>• <b class="text-cyan-300">معرف الجهاز</b> يظهر قابل للنسخ في رسالة القناة (داخل <code class="text-indigo-300">&lt;code&gt;</code>)</li>
+                    <li>• الأوامر <b class="text-teal-300">/start و /admin</b> تظهر في قائمة "/" تلقائياً بدون كتابة يدوية</li>
+                </ul>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 py-8 text-center text-slate-500">
+        <p>🤖 بوت إدارة طلبات السنة التحضيرية — مبني بـ Python + aiogram 3.x</p>
+        <p class="mt-2 text-sm">تم التطوير باحترافية 💜</p>
+    </footer>
+
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const selectedTab = document.getElementById('tab-' + tabName);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                selectedTab.classList.add('animate-fade-in');
+                selectedTab.style.animationDelay = '0s';
+            }
+
+            document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+        }
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.card-gradient').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+
+</body>
+</html>
